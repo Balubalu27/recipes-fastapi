@@ -12,20 +12,26 @@ class DishType(str, Enum):
     PASTRY = 'Выпечка'
 
 
-class Recipe(BaseModel):
-    id: int
+class RecipeBase(BaseModel):
     title: str
-    author_id: int
     dish_type: DishType
     description: str | None
     cooking_steps: str
     photo_link: str
-    # likes = Column()
-    # hashtags = Column()
+
+
+class Recipe(RecipeBase):
+    id: int
     is_active: bool
+    author_id: int
     created_at: datetime
     last_updated: datetime
+    likes: int
 
     class Config:
         orm_mode = True
-    
+
+
+class RecipeCreate(RecipeBase):
+    class Config:
+        orm_mode = True

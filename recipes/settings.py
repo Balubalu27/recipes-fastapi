@@ -7,6 +7,10 @@ class Settings(BaseSettings):
     server_port: int = 8000
     database_url: str
 
+    jwt_secret: str
+    jwt_algorithm: str
+    jwt_expiration: int = 3600
+
 
 #  Для считывания переменных окружения из файла. Нужна библиотека python-dotenv.
 settings = Settings(

@@ -1,18 +1,17 @@
-from datetime import datetime
-
 from pydantic import BaseModel
 
-from recipes.models.recipes import Recipe
 
-
-class User(BaseModel):
-    id: int
+class UserBase(BaseModel):
     username: str
-    recipes: list[Recipe]
-    # favorites
+
+
+class User(UserBase):
+    id: int
     is_active: bool
-    created_at: datetime
-    last_updated: datetime
 
     class Config:
         orm_mode = True
+
+
+class UserCreate(UserBase):
+    password: str
