@@ -1,22 +1,16 @@
-from sqlalchemy import create_engine
+from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker
 from recipes.settings import settings
 
 
-engine = create_engine(settings.database_url)
-
-# Base.metadata.create_all(engine)  -> Для создания таблиц в БД
-
-Session = sessionmaker(
+engine = create_async_engine(settings.database_url, echo=True)
+async_session = sessionmaker(
     engine,
-    autocommit=False,
-    autoflush=False
+    class_=AsyncSession,
+    expire_on_commit=False
 )
 
 
-def get_session() -> Session:
-    session = Session()
-    try:
+async def get_session() -> AsyncSession:
+    async with async_session() as session:
         yield session
-    finally:
-        session.close()

@@ -9,7 +9,7 @@ class User(BaseModel):
     id: int
     username: str
     recipes: list[Recipe]
-    # favorites = Column() - ManyToMany на рецепты
+    # favorites
     is_active: bool
     created_at: datetime
     last_updated: datetime

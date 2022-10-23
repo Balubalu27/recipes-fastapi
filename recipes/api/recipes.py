@@ -9,5 +9,5 @@ router = APIRouter(
 
 
 @router.get('/', response_model=list[Recipe])
-async def get_users(service: RecipesService = Depends()):
-    return service.get_list()
+async def get_recipes(service: RecipesService = Depends()):
+    return await service.get_list()

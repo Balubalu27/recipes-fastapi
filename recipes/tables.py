@@ -24,7 +24,7 @@ class Recipe(Base):
 
     id = Column(Integer, primary_key=True)
     title = Column(String)
-    author_id = Column(Integer, ForeignKey("users.id"))
+    author_id = Column(ForeignKey("users.id"))
     author = relationship("User", back_populates="recipes")
     dish_type = Column(String(20))
     description = Column(String, nullable=True)
