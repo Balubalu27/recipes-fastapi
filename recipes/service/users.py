@@ -22,26 +22,6 @@ class UsersService:
         users = await self.session.execute(request)
         return users.scalars().all()
 
-    async def get_user(self, user_id: int) -> User:
-        """ Получения профиля пользователя по id """
-        request = select(User).options(selectinload(User.recipes))\
-            .filter_by(id=user_id)\
-            .group_by(User.id)
-        result = await self.session.execute(request)
-        user = result.scalars().first()
-        if not user:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
-        return user
-
-    async def create(self, user_data: UserCreate) -> User:
-        hashed_pass = get_password_hash(user_data.password)
-        user = User(username=user_data.username, password=hashed_pass)
-        self.session.add(user)
-        await self.session.commit()
-        return user
-
-
-# , func.count().label("recipes_count")
 
 
 
