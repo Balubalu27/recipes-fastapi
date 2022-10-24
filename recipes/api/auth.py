@@ -27,8 +27,3 @@ async def sign_in(
         form_data.username,
         form_data.password
     )
-
-
-@router.get('/user', response_model=User)
-def get_user(user: User = Depends(get_current_user)):
-    return user

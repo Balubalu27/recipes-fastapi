@@ -1,18 +1,18 @@
 from datetime import datetime, timedelta
 
-from fastapi import HTTPException, status, Depends
+from fastapi import Depends
 from fastapi.security import OAuth2PasswordBearer
 from jose import jwt, JWTError
 from passlib.hash import bcrypt
 from pydantic import ValidationError
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
-from sqlalchemy.orm import selectinload
 
 from recipes import tables
 from recipes.database import get_session
 from recipes.models.auth import Token
 from recipes.models.users import User, UserCreate
+from recipes.service.exceptions import credentials_exception, is_blocked_exception, has_not_permissions
 from recipes.settings import settings
 
 
@@ -21,6 +21,16 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl='/auth/sign-in')
 
 def get_current_user(token: str = Depends(oauth2_scheme)):
     return AuthService.validate_token(token)
+
+
+def check_user_status(user: User):
+    if not user.is_active:
+        raise is_blocked_exception
+
+
+def check_admin_permission(user: User):
+    if not user.is_superuser:
+        raise has_not_permissions
 
 
 class AuthService:
@@ -37,11 +47,6 @@ class AuthService:
 
     @classmethod
     def validate_token(cls, token: str) -> User:
-        credentials_exception = HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Could not validate credentials",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
         try:
             payload = jwt.decode(
                 token,
@@ -87,11 +92,6 @@ class AuthService:
         return self.create_token(user)
 
     async def authenticate_user(self, username: str, password: str) -> Token:
-        credentials_exception = HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Could not validate credentials",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
         request = select(tables.User).filter(tables.User.username == username)
         result = await self.session.execute(request)
         user = result.scalars().first()

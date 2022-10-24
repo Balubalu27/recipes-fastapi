@@ -14,9 +14,9 @@ async def get_users(
         service: UsersService = Depends(),
         user: User = Depends(get_current_user)
 ):
-    return await service.get_list()
+    return await service.get_list(user)
 
 
 @router.get('/current_user', response_model=User)
-async def get_user(user: User = Depends(get_current_user)):
+async def get_profile(user: User = Depends(get_current_user)):
     return user

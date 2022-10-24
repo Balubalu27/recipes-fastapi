@@ -16,7 +16,6 @@ class RecipeBase(BaseModel):
     title: str
     dish_type: DishType
     description: str | None
-    cooking_steps: str
     photo_link: str
 
 
@@ -25,7 +24,7 @@ class Recipe(RecipeBase):
     is_active: bool
     author_id: int
     created_at: datetime
-    last_updated: datetime
+    updated_at: datetime
     likes: int
 
     class Config:
@@ -35,3 +34,7 @@ class Recipe(RecipeBase):
 class RecipeCreate(RecipeBase):
     class Config:
         orm_mode = True
+
+
+class RecipeShow(Recipe):
+    cooking_steps: str
