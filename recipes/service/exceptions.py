@@ -15,7 +15,12 @@ not_found_exception = HTTPException(
     status_code=status.HTTP_404_NOT_FOUND,
 )
 
-has_not_permissions = HTTPException(
+has_not_permissions_exception = HTTPException(
     status_code=status.HTTP_403_FORBIDDEN,
     detail="Permissions denied",
+)
+
+is_already_exists_exception = HTTPException(
+    status_code=status.HTTP_409_CONFLICT,
+    detail="User already exists",
 )

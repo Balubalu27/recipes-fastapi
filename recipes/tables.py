@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey
+from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey, func
 from sqlalchemy.orm import relationship, declarative_mixin
 
 Base = declarative_base()
@@ -9,8 +9,8 @@ Base = declarative_base()
 
 @declarative_mixin
 class TimestampMixin:
-    created_at = Column(DateTime, default=datetime.utcnow(), nullable=False)
-    updated_at = Column(DateTime, default=datetime.utcnow(), nullable=False)
+    created_at = Column(DateTime, server_default=func.now())
+    updated_at = Column(DateTime, server_default=func.now(), onupdate=func.current_timestamp())
 
 
 @declarative_mixin

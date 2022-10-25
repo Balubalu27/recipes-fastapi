@@ -32,6 +32,8 @@ class Recipe(RecipeBase):
 
 
 class RecipeCreate(RecipeBase):
+    cooking_steps: str
+
     class Config:
         orm_mode = True
 

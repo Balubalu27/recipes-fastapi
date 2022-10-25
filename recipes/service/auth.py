@@ -11,8 +11,9 @@ from sqlalchemy.future import select
 from recipes import tables
 from recipes.database import get_session
 from recipes.models.auth import Token
-from recipes.models.users import User, UserCreate
-from recipes.service.exceptions import credentials_exception, is_blocked_exception, has_not_permissions
+from recipes.models.users import User, UserCreate, SuperUser
+from recipes.service.exceptions import credentials_exception, is_blocked_exception, has_not_permissions_exception, \
+    is_already_exists_exception
 from recipes.settings import settings
 
 
@@ -28,9 +29,9 @@ def check_user_status(user: User):
         raise is_blocked_exception
 
 
-def check_admin_permission(user: User):
+def check_admin_permission(user: SuperUser):
     if not user.is_superuser:
-        raise has_not_permissions
+        raise has_not_permissions_exception
 
 
 class AuthService:
@@ -54,13 +55,13 @@ class AuthService:
                 algorithms=[settings.jwt_algorithm]
             )
         except JWTError:
-            raise credentials_exception  # from None
+            raise credentials_exception
 
         user_data = payload.get('user')
         try:
             user = User.parse_obj(user_data)
         except ValidationError:
-            raise credentials_exception  # from None
+            raise credentials_exception
         return user
 
     @classmethod
@@ -83,17 +84,22 @@ class AuthService:
         return Token(access_token=token)
 
     async def register_new_user(self, user_data: UserCreate) -> Token:
-        user = tables.User(
+        query = select(tables.User).where(tables.User.username == user_data.username)
+        result = await self.session.execute(query)
+        user = result.scalar()
+        if user:
+            raise is_already_exists_exception
+        new_user = tables.User(
             username=user_data.username,
             password=self.hash_password(user_data.password)
         )
-        self.session.add(user)
+        self.session.add(new_user)
         await self.session.commit()
-        return self.create_token(user)
+        return self.create_token(new_user)
 
     async def authenticate_user(self, username: str, password: str) -> Token:
-        request = select(tables.User).filter(tables.User.username == username)
-        result = await self.session.execute(request)
+        query = select(tables.User).where(tables.User.username == username)
+        result = await self.session.execute(query)
         user = result.scalars().first()
 
         if not user:
