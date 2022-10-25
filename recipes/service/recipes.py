@@ -1,4 +1,5 @@
-from typing import Any
+from fastapi_pagination import Page, add_pagination, paginate
+from fastapi_pagination.ext.sqlalchemy import paginate
 
 from fastapi import Depends
 from sqlalchemy import update
@@ -63,13 +64,11 @@ class RecipesService:
             dish_type: DishType | None,
             author_id: int | None
     ):
-        query = select(Recipe)\
-            .where(Recipe.is_active)\
-            .order_by(Recipe.created_at.desc(), Recipe.likes.desc(), Recipe.title)
+        query = select(Recipe).where(Recipe.is_active)
         if title is not None:
             query = query.filter(Recipe.title.like(f'%{title}%'))
         if dish_type is not None:
             query = query.filter_by(dish_type=dish_type)
         if author_id is not None:
             query = query.filter_by(author_id=author_id)
-        return query
+        return query.order_by(Recipe.created_at.desc(), Recipe.likes.desc(), Recipe.title)
