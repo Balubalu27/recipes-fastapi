@@ -5,7 +5,7 @@ from sqlalchemy import update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from recipes.database import get_session
-from recipes.models.users import User, SuperUser
+from recipes.models.users import User
 from recipes.service.auth import check_admin_permission
 from recipes.service.exceptions import not_found_exception
 from recipes import tables
@@ -16,7 +16,7 @@ class AdminService:
         self.session = session
 
     async def change_status(
-            self, user: SuperUser,
+            self, user: User,
             table: Union[tables.User, tables.Recipe],
             new_status: bool, id: int
     ):
@@ -32,8 +32,8 @@ class AdminService:
         await self.session.commit()
         return {'detail': f'id={id} successfully change status to {new_status}'}
 
-    async def change_recipe_status(self, user: SuperUser, new_status: bool, id: int):
+    async def change_recipe_status(self, user: User, new_status: bool, id: int):
         return await self.change_status(user, tables.Recipe, new_status, id)
 
-    async def change_user_status(self, user: SuperUser, new_status: bool, id: int):
+    async def change_user_status(self, user: User, new_status: bool, id: int):
         return await self.change_status(user, tables.User, new_status, id)

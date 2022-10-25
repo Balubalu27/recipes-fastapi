@@ -11,7 +11,7 @@ from sqlalchemy.future import select
 from recipes import tables
 from recipes.database import get_session
 from recipes.models.auth import Token
-from recipes.models.users import User, UserCreate, SuperUser
+from recipes.models.users import User, UserCreate
 from recipes.service.exceptions import credentials_exception, is_blocked_exception, has_not_permissions_exception, \
     is_already_exists_exception
 from recipes.settings import settings
@@ -29,7 +29,7 @@ def check_user_status(user: User):
         raise is_blocked_exception
 
 
-def check_admin_permission(user: SuperUser):
+def check_admin_permission(user: User):
     if not user.is_superuser:
         raise has_not_permissions_exception
 
@@ -56,7 +56,6 @@ class AuthService:
             )
         except JWTError:
             raise credentials_exception
-
         user_data = payload.get('user')
         try:
             user = User.parse_obj(user_data)

@@ -8,6 +8,7 @@ from sqlalchemy.future import select
 
 from recipes.models.recipes import RecipeCreate, DishType
 from recipes.models.users import User
+from recipes.models import recipes
 from recipes.service.auth import check_user_status, check_admin_permission
 from recipes.service.exceptions import not_found_exception
 from recipes.tables import Recipe
@@ -56,6 +57,9 @@ class RecipesService:
         self.session.add(recipe)
         await self.session.commit()
         return recipe
+
+    async def change_recipe(self, user: User, id: int, recipe: dict):
+        pass
 
     @classmethod
     async def get_filtered_query(

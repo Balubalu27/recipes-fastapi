@@ -1,5 +1,5 @@
 from fastapi import Depends
-from sqlalchemy import func
+from sqlalchemy import func, update
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from sqlalchemy.orm import selectinload, joinedload
@@ -7,7 +7,7 @@ from sqlalchemy.sql.functions import coalesce
 
 from recipes.models.users import UserWithRecipes
 from recipes.service.auth import check_user_status
-from recipes.service.exceptions import is_blocked_exception
+from recipes.service.exceptions import is_blocked_exception, not_found_exception
 from recipes.tables import User, Recipe
 from recipes.database import get_session
 from recipes.models import users
@@ -31,7 +31,7 @@ class UsersService:
         users.sort(key=lambda x: x.recipes_count)
         return users
 
-    async def get_profile(self, user: users.User) -> UserWithRecipes:
+    async def get_profile(self, user: users.User) -> User:
         query = select(User)\
             .select_from(Recipe)\
             .options(selectinload(User.recipes))\
@@ -40,3 +40,15 @@ class UsersService:
         user = result.scalar()
         user.recipes_count = len(user.recipes)
         return user
+
+    async def change_username(self, user: users.User, username: str):
+        query = update(User) \
+            .where(User.id == user.id) \
+            .values(username=username) \
+            .returning(User.id)
+        result = await self.session.execute(query)
+        updated_id = result.scalar()
+        if not updated_id:
+            raise not_found_exception
+        await self.session.commit()
+        return {'detail': f'Successfully change username to {username}'}

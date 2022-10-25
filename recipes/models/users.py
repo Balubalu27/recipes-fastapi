@@ -14,6 +14,7 @@ class UserCreate(UserBase):
 class User(UserBase):
     id: int
     is_active: bool
+    is_superuser: bool
 
     class Config:
         orm_mode = True
@@ -21,8 +22,3 @@ class User(UserBase):
 
 class UserWithRecipes(User):
     recipes_count: int
-
-
-class SuperUser(User):
-    is_superuser: bool
-

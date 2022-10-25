@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, status, Body
 from fastapi.params import Query
 from fastapi_pagination import Page, paginate
 
@@ -48,3 +48,13 @@ async def create_recipe(
         user: User = Depends(get_current_user)
 ):
     return await service.create(user, operation_data)
+
+
+@router.patch('/change_recipe/{id}', status_code=status.HTTP_202_ACCEPTED)
+async def change_recipe(
+        id: int,
+        recipe: dict,
+        service: RecipesService = Depends(),
+        user: User = Depends(get_current_user)
+):
+    return await service.change_recipe(user, id, recipe)
