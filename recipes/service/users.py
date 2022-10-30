@@ -28,10 +28,11 @@ class UsersService:
         users = result.scalars().all()
         for i_user in users:
             i_user.recipes_count = len(i_user.recipes)
-        users.sort(key=lambda x: x.recipes_count)
+        users.sort(key=lambda x: x.recipes_count, reverse=True)
         return users
 
     async def get_profile(self, user: users.User) -> User:
+        """ Получения профиля текущего пользователя """
         query = select(User)\
             .select_from(Recipe)\
             .options(selectinload(User.recipes))\
@@ -42,6 +43,7 @@ class UsersService:
         return user
 
     async def change_username(self, user: users.User, username: str):
+        """ Изменение своего никнейма """
         query = update(User) \
             .where(User.id == user.id) \
             .values(username=username) \

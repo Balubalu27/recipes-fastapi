@@ -8,7 +8,8 @@ from recipes.service.auth import get_current_user
 from recipes.service.recipes import RecipesService
 
 router = APIRouter(
-    prefix='/recipes'
+    prefix='/recipes',
+    tags=['Recipes']
 )
 
 
@@ -20,6 +21,13 @@ async def get_all_recipes(
         service: RecipesService = Depends(),
         user: User = Depends(get_current_user)
 ):
+    """
+    Получение списка рецептов (без поля «шаги приготовления»)
+    - **title**: фильтрация по названию/части названия
+    - **dish_type**: фильтрация по типу блюда
+    - **author_id**: фильтрация по автору (id)
+    """
+
     all_recipes = await service.get_all_recipes(user, title, dish_type, author_id)
     return paginate(all_recipes)
 
@@ -29,6 +37,8 @@ async def get_my_recipes(
         service: RecipesService = Depends(),
         user: User = Depends(get_current_user)
 ):
+    """ Получение рецептов текущего пользователя """
+
     return await service.get_my_recipes(user)
 
 
@@ -38,6 +48,11 @@ async def get_recipe(
         service: RecipesService = Depends(),
         user: User = Depends(get_current_user),
 ):
+    """
+    Получение конкретного рецепта
+    - **id**: id получаемого рецепта
+    """
+
     return await service.get_recipe(user, id)
 
 
@@ -47,14 +62,6 @@ async def create_recipe(
         service: RecipesService = Depends(),
         user: User = Depends(get_current_user)
 ):
+    """ Добавление пользователем рецепта """
+
     return await service.create(user, operation_data)
-
-
-@router.patch('/change_recipe/{id}', status_code=status.HTTP_202_ACCEPTED)
-async def change_recipe(
-        id: int,
-        recipe: dict,
-        service: RecipesService = Depends(),
-        user: User = Depends(get_current_user)
-):
-    return await service.change_recipe(user, id, recipe)

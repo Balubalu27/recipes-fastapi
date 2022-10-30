@@ -9,7 +9,8 @@ from recipes.service.recipes import RecipesService
 from recipes.service.users import UsersService
 
 router = APIRouter(
-    prefix='/admin'
+    prefix='/admin',
+    tags=['Admin']
 )
 
 
@@ -20,6 +21,12 @@ async def change_recipe_status(
         service: AdminService = Depends(),
         user: User = Depends(get_current_user)
 ):
+    """
+    Блокировка/разблокировка рецепта
+    - **id**: id рецепта
+    - **new_status**: новый статус рецепта
+    """
+
     return await service.change_recipe_status(user, new_status, id)
 
 
@@ -30,4 +37,9 @@ async def change_user_status(
         service: AdminService = Depends(),
         user: User = Depends(get_current_user)
 ):
+    """
+    Блокировка/разблокировка пользователя
+    - **id**: id пользователя
+    - **new_status**: новый статус пользователя
+    """
     return await service.change_user_status(user, new_status, id)

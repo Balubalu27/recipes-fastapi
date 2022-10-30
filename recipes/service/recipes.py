@@ -25,6 +25,7 @@ class RecipesService:
             dish_type: DishType | None,
             author_id: int | None,
     ) -> list[Recipe]:
+        """ Получение списка рецептов (без поля «шаги приготовления») """
 
         check_user_status(user)
         query = await self.get_filtered_query(title, dish_type, author_id)
@@ -32,6 +33,8 @@ class RecipesService:
         return recipes.scalars().all()
 
     async def get_my_recipes(self, user: User) -> list[Recipe]:
+        """ Получение рецептов текущего пользователя """
+
         check_user_status(user)
         query = select(Recipe) \
             .where(Recipe.is_active, Recipe.author_id == user.id)
@@ -39,6 +42,8 @@ class RecipesService:
         return recipes.scalars().all()
 
     async def get_recipe(self, user: User, id: int) -> Recipe:
+        """ Получение конкретного рецепта по id """
+
         check_user_status(user)
         query = select(Recipe)\
             .where(Recipe.is_active, Recipe.id == id)
@@ -49,6 +54,8 @@ class RecipesService:
         return result
 
     async def create(self, user: User, recipe_data: RecipeCreate) -> Recipe:
+        """ Добавление пользователем рецепта """
+
         check_user_status(user)
         recipe = Recipe(
             **recipe_data.dict(),
@@ -58,9 +65,6 @@ class RecipesService:
         await self.session.commit()
         return recipe
 
-    async def change_recipe(self, user: User, id: int, recipe: dict):
-        pass
-
     @classmethod
     async def get_filtered_query(
             cls,
@@ -68,6 +72,8 @@ class RecipesService:
             dish_type: DishType | None,
             author_id: int | None
     ):
+        """ Получение списка рецептов, отфильтрованного по query параметрам """
+
         query = select(Recipe).where(Recipe.is_active)
         if title is not None:
             query = query.filter(Recipe.title.like(f'%{title}%'))

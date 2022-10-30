@@ -20,6 +20,8 @@ class AdminService:
             table: Union[tables.User, tables.Recipe],
             new_status: bool, id: int
     ):
+        """ Изменение статуса у переданного объекта """
+
         check_admin_permission(user)
         query = update(table)\
             .where(table.id == id)\
@@ -33,7 +35,9 @@ class AdminService:
         return {'detail': f'id={id} successfully change status to {new_status}'}
 
     async def change_recipe_status(self, user: User, new_status: bool, id: int):
+        """ Блокировка/разблокировка рецепта """
         return await self.change_status(user, tables.Recipe, new_status, id)
 
     async def change_user_status(self, user: User, new_status: bool, id: int):
+        """ Блокировка/разблокировка пользователя """
         return await self.change_status(user, tables.User, new_status, id)

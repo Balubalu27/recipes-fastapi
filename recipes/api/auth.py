@@ -6,7 +6,8 @@ from recipes.models.users import UserCreate, User
 from recipes.service.auth import AuthService, get_current_user
 
 router = APIRouter(
-    prefix='/auth'
+    prefix='/auth',
+    tags=['Auth']
 )
 
 
@@ -15,6 +16,7 @@ async def sign_up(
         user_data: UserCreate,
         service: AuthService = Depends()
 ):
+    """ Регистрация пользователя """
     return await service.register_new_user(user_data)
 
 
@@ -23,6 +25,8 @@ async def sign_in(
         form_data: OAuth2PasswordRequestForm = Depends(),
         service: AuthService = Depends()
 ):
+    """ Авторизация пользователя """
+
     return await service.authenticate_user(
         form_data.username,
         form_data.password
