@@ -30,6 +30,12 @@ app = FastAPI(
     version='1.0.0',
     openapi_tags=tags_metadata
 )
+
+
+@app.get('/')
+async def root():
+    return {'Главная страница': 'Для работы с API перейдите на 0.0.0.0:8001/docs'}
+
 app.include_router(router)
 
 add_pagination(app)

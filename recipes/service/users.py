@@ -31,14 +31,19 @@ class UsersService:
         users.sort(key=lambda x: x.recipes_count, reverse=True)
         return users
 
-    async def get_profile(self, user: users.User) -> User:
-        """ Получения профиля текущего пользователя """
-        query = select(User)\
-            .select_from(Recipe)\
+    async def get_profile(self, user: users.User, id: int | None = None) -> User:
+        """ Получения профиля пользователя """
+
+        user_id = user.id
+        if id is not None:
+            user_id = id
+        query = select(User) \
             .options(selectinload(User.recipes))\
-            .where(User.is_active, User.id == user.id)
+            .where(User.is_active, User.id == user_id)
         result = await self.session.execute(query)
         user = result.scalar()
+        if not user:
+            raise not_found_exception
         user.recipes_count = len(user.recipes)
         return user
 

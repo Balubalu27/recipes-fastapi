@@ -22,9 +22,22 @@ async def get_users(
 
 
 @router.get('/my_profile', response_model=UserWithRecipes)
-async def get_profile(service: UsersService = Depends(), user: User = Depends(get_current_user)):
-    """ Получения профиля текущего пользователя """
+async def get_my_profile(
+        service: UsersService = Depends(),
+        user: User = Depends(get_current_user)
+):
+    """ Получение профиля текущего пользователя """
     return await service.get_profile(user)
+
+
+@router.get('/profile/{id}', response_model=UserWithRecipes)
+async def get_user_profile(
+        id: int,
+        service: UsersService = Depends(),
+        user: User = Depends(get_current_user)
+):
+    """ Получение профиля пользователя по id"""
+    return await service.get_profile(user, id)
 
 
 @router.patch('/change_username', status_code=status.HTTP_202_ACCEPTED)
