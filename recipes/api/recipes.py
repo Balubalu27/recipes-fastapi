@@ -1,8 +1,8 @@
-from fastapi import APIRouter, Depends, status, Body
+from fastapi import APIRouter, Depends, status
 from fastapi.params import Query
 from fastapi_pagination import Page, paginate
 
-from recipes.models.recipes import Recipe, RecipeCreate, RecipeShow, DishType
+from recipes.models.recipes import DishType, Recipe, RecipeCreate, RecipeShow
 from recipes.models.users import User
 from recipes.service.auth import get_current_user
 from recipes.service.recipes import RecipesService

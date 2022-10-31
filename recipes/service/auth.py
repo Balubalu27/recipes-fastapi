@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 
 from fastapi import Depends
 from fastapi.security import OAuth2PasswordBearer
-from jose import jwt, JWTError
+from jose import JWTError, jwt
 from passlib.hash import bcrypt
 from pydantic import ValidationError
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -12,10 +12,11 @@ from recipes import tables
 from recipes.database import get_session
 from recipes.models.auth import Token
 from recipes.models.users import User, UserCreate
-from recipes.service.exceptions import credentials_exception, is_blocked_exception, has_not_permissions_exception, \
-    is_already_exists_exception
+from recipes.service.exceptions import (credentials_exception,
+                                        has_not_permissions_exception,
+                                        is_already_exists_exception,
+                                        is_blocked_exception)
 from recipes.settings import settings
-
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl='/auth/sign-in')
 

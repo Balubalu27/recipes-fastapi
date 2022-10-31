@@ -1,18 +1,13 @@
-from fastapi_pagination import Page, add_pagination, paginate
-from fastapi_pagination.ext.sqlalchemy import paginate
-
 from fastapi import Depends
-from sqlalchemy import update
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
-from recipes.models.recipes import RecipeCreate, DishType
+from recipes.database import get_session
+from recipes.models.recipes import DishType, RecipeCreate
 from recipes.models.users import User
-from recipes.models import recipes
-from recipes.service.auth import check_user_status, check_admin_permission
+from recipes.service.auth import check_user_status
 from recipes.service.exceptions import not_found_exception
 from recipes.tables import Recipe
-from recipes.database import get_session
 
 
 class RecipesService:

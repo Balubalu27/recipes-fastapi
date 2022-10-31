@@ -1,8 +1,7 @@
-from datetime import datetime
-
+from sqlalchemy import (Boolean, Column, DateTime, ForeignKey, Integer, String,
+                        func)
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey, func
-from sqlalchemy.orm import relationship, declarative_mixin
+from sqlalchemy.orm import declarative_mixin, relationship
 
 Base = declarative_base()
 

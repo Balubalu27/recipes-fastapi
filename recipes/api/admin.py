@@ -1,12 +1,8 @@
-from fastapi import APIRouter, Depends
-from fastapi import status
+from fastapi import APIRouter, Depends, status
 
-from recipes.models.recipes import Recipe
 from recipes.models.users import User
 from recipes.service.admin import AdminService
 from recipes.service.auth import get_current_user
-from recipes.service.recipes import RecipesService
-from recipes.service.users import UsersService
 
 router = APIRouter(
     prefix='/admin',

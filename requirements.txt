@@ -9,3 +9,6 @@ python-jose[cryptography]
 passlib[bcrypt]
 python-multipart
 fastapi-pagination
+pytest
+requests
+httpx

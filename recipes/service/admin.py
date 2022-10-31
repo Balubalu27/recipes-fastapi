@@ -4,11 +4,11 @@ from fastapi import Depends
 from sqlalchemy import update
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from recipes import tables
 from recipes.database import get_session
 from recipes.models.users import User
 from recipes.service.auth import check_admin_permission
 from recipes.service.exceptions import not_found_exception
-from recipes import tables
 
 
 class AdminService:

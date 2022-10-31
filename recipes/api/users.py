@@ -1,10 +1,8 @@
-from fastapi import APIRouter, Depends
-from fastapi import status
+from fastapi import APIRouter, Depends, status
 
-from recipes.models.users import User, UserCreate, UserWithRecipes
+from recipes.models.users import User, UserWithRecipes
 from recipes.service.auth import get_current_user
 from recipes.service.users import UsersService
-
 
 router = APIRouter(
     prefix='/users',

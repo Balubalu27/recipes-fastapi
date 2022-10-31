@@ -1,7 +1,7 @@
-from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
+from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
-from recipes.settings import settings
 
+from recipes.settings import settings
 
 engine = create_async_engine(settings.database_url, echo=True)
 async_session = sessionmaker(

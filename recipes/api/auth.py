@@ -2,8 +2,8 @@ from fastapi import APIRouter, Depends
 from fastapi.security import OAuth2PasswordRequestForm
 
 from recipes.models.auth import Token
-from recipes.models.users import UserCreate, User
-from recipes.service.auth import AuthService, get_current_user
+from recipes.models.users import UserCreate
+from recipes.service.auth import AuthService
 
 router = APIRouter(
     prefix='/auth',

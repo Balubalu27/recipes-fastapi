@@ -1,16 +1,14 @@
 from fastapi import Depends
-from sqlalchemy import func, update
+from sqlalchemy import update
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
-from sqlalchemy.orm import selectinload, joinedload
-from sqlalchemy.sql.functions import coalesce
+from sqlalchemy.orm import selectinload
 
-from recipes.models.users import UserWithRecipes
-from recipes.service.auth import check_user_status
-from recipes.service.exceptions import is_blocked_exception, not_found_exception
-from recipes.tables import User, Recipe
 from recipes.database import get_session
 from recipes.models import users
+from recipes.service.auth import check_user_status
+from recipes.service.exceptions import not_found_exception
+from recipes.tables import User
 
 
 class UsersService:

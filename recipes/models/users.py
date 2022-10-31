@@ -1,7 +1,5 @@
 from pydantic import BaseModel
 
-from recipes.models.recipes import Recipe
-
 
 class UserBase(BaseModel):
     username: str
